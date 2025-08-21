@@ -1,6 +1,6 @@
-import { defineCollection, type ImageFunction } from 'astro:content';
-import { glob } from 'astro/loaders';
-import { z } from 'zod';
+import { defineCollection, type ImageFunction } from "astro:content";
+import { glob } from "astro/loaders";
+import { z } from "zod";
 
 export const seoSchemaWithoutImage = z.object({
   title: z.string(),
@@ -24,7 +24,7 @@ const seoSchema = (image: ImageFunction) =>
     .merge(seoSchemaWithoutImage);
 
 const pageCollection = defineCollection({
-  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/pages' }),
+  loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: "./src/content/pages" }),
   schema: ({ image }) =>
     z.object({
       title: z.string(),
@@ -34,7 +34,7 @@ const pageCollection = defineCollection({
 });
 
 const linkCollection = defineCollection({
-  loader: glob({ pattern: '**/[^_]*.yml', base: './src/content/links' }),
+  loader: glob({ pattern: "**/[^_]*.yml", base: "./src/content/links" }),
   schema: z.object({
     label: z.string(),
     name: z.string(),
@@ -43,19 +43,18 @@ const linkCollection = defineCollection({
 });
 
 const jobCollection = defineCollection({
-  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/jobs' }),
+  loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: "./src/content/jobs" }),
   schema: z.object({
     title: z.string(),
     company: z.string(),
     location: z.string(),
     from: z.number(),
-    to: z.number().or(z.enum(['Now'])),
-    url: z.string(),
+    to: z.number().or(z.enum(["Now"])),
   }),
 });
 
 const talkCollection = defineCollection({
-  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/talks' }),
+  loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: "./src/content/talks" }),
   schema: z.object({
     title: z.string(),
     year: z.number(),
@@ -66,7 +65,7 @@ const talkCollection = defineCollection({
 });
 
 const postCollection = defineCollection({
-  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/posts' }),
+  loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: "./src/content/posts" }),
   schema: ({ image }) =>
     z.object({
       title: z.string(),
