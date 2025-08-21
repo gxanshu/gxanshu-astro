@@ -4,7 +4,9 @@ import Container from '@/components/Container.astro';
 const pathname = Astro.url.pathname;
 
 const isHomePage = pathname === '/';
-const isWritingPage = pathname.startsWith('/writing');
+const isBlogPage = pathname.startsWith('/blog');
+const isNotesPage = pathname.startsWith('/notes');
+const isProjectsPage = pathname.startsWith('/projects');
 
 ---
 
@@ -20,11 +22,25 @@ const isWritingPage = pathname.startsWith('/writing');
           ]}>Home</a>
         </li>
         <li>
-          <a href="/writing" class:list={[
+          <a href="/blog" class:list={[
             'font-medium transition-colors block px-5 py-2',
             'hover:text-headings',
-            isWritingPage && 'text-headings bg-muted-foreground/40 rounded-full',
-          ]}>Writing</a>
+            isBlogPage && 'text-headings bg-muted-foreground/40 rounded-full',
+          ]}>Blogs</a>
+        </li>
+        <li>
+          <a href="/notes" class:list={[
+            'font-medium transition-colors block px-5 py-2',
+            'hover:text-headings',
+            isNotesPage && 'text-headings bg-muted-foreground/40 rounded-full',
+          ]}>Notes</a>
+        </li>
+        <li>
+          <a href="/projects" class:list={[
+            'font-medium transition-colors block px-5 py-2',
+            'hover:text-headings',
+            isProjectsPage && 'text-headings bg-muted-foreground/40 rounded-full',
+          ]}>Projects</a>
         </li>
       </ul>
     </nav>
