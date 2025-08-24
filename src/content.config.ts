@@ -75,10 +75,36 @@ const blogsCollection = defineCollection({
     }),
 });
 
+const notesCollection = defineCollection({
+  loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: "./src/content/notes" }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      date: z.date(),
+      seo: seoSchema(image),
+    }),
+});
+
+const projectsCollection = defineCollection({
+  loader: glob({
+    pattern: "**/[^_]*.{md,mdx}",
+    base: "./src/content/projects",
+  }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      date: z.date(),
+      image: image().optional(),
+      seo: seoSchema(image),
+    }),
+});
+
 export const collections = {
   pages: pageCollection,
   links: linkCollection,
   jobs: jobCollection,
   talks: talkCollection,
   blogs: blogsCollection,
+  notes: notesCollection,
+  projects: projectsCollection,
 };
