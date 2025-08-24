@@ -3,6 +3,7 @@ import { getImage, Font } from 'astro:assets';
 import type { Seo } from '@/lib/constants'
 import { DEFAULT_CONFIGURATION } from '@/lib/constants';
 import { generateAbsoluteUrl } from '@/lib/utils';
+import { ClientRouter } from "astro:transitions";
 
 interface Props {
   seo?: Seo;
@@ -56,5 +57,7 @@ const seoImage = generateAbsoluteUrl(image.src);
       }
     })();
   </script>
+
+  <ClientRouter />
   <slot />
 </head>
