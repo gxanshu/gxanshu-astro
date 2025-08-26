@@ -18,7 +18,7 @@ const pathname = Astro.url?.pathname || '/';
 const cleanPath = pathname.replace(/\/$/, '');
 // Compute og:image dynamically for any content path except root
 if (pathname !== '/' && pathname !== '') {
-  seoImage = `/open-graph${cleanPath}.png`;
+  seoImage = `https://gxanshu.in/open-graph${cleanPath}.png`;
 } else {
   const image = await getImage({ src: seo?.image || defaultSeo.image, format: 'jpg'});
   seoImage = generateAbsoluteUrl(image.src);
