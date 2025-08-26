@@ -8,16 +8,10 @@ const projectEntries = await getCollection("projects");
 
 const pages = Object.fromEntries(
   blogEntries
-    .map((entry) => [`/${entry.collection}/${entry.id}`, entry.data])
+    .map((entry) => [`/blogs/${entry.id}`, entry.data])
     .concat(
-      noteEntries.map((entry) => [
-        `/${entry.collection}/${entry.id}`,
-        entry.data,
-      ]),
-      projectEntries.map((entry) => [
-        `/${entry.collection}/${entry.id}`,
-        entry.data,
-      ]),
+      noteEntries.map((entry) => [`/notes/${entry.id}`, entry.data]),
+      projectEntries.map((entry) => [`/projects/${entry.id}`, entry.data]),
     ),
 );
 
