@@ -12,8 +12,17 @@ interface Props {
 const defaultSeo = DEFAULT_CONFIGURATION.seo;
 const { seo } = Astro.props;
 
-const image = await getImage({ src: seo?.image || defaultSeo.image, format: 'jpg'});
-const seoImage = generateAbsoluteUrl(image.src);
+let seoImage: string;
+const pathname = Astro.url?.pathname || '/';
+// Remove trailing slash if present
+const cleanPath = pathname.replace(/\/$/, '');
+// Compute og:image dynamically for any content path except root
+if (pathname !== '/' && pathname !== '') {
+  seoImage = `/open-graph${cleanPath}.png`;
+} else {
+  const image = await getImage({ src: seo?.image || defaultSeo.image, format: 'jpg'});
+  seoImage = generateAbsoluteUrl(image.src);
+}
 ---
 <head>
   <meta charset="utf-8" />
