@@ -42,6 +42,6 @@ export const DEFAULT_CONFIGURATION: DefaultConfigurationType = {
     twitter: {
       creator: "@gxanshu",
     },
-    robots: "noindex, nofollow",
+    robots: "index, follow",
   },
 };
