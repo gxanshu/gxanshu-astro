@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from "astro/config";
+import { defineConfig, fontProviders } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@astrojs/react";
 import mdx from "@astrojs/mdx";
@@ -26,12 +26,12 @@ export default defineConfig({
       syntaxHighlight: "shiki",
     }),
   ],
-  experimental: {
-    fonts: [
-      {
-        name: "Inter",
-        cssVariable: "--font-inter",
-        provider: "local",
+  fonts: [
+    {
+      provider: fontProviders.local(),
+      name: "Inter",
+      cssVariable: "--font-inter",
+      options: {
         variants: [
           {
             src: ["./src/assets/fonts/Inter-Regular.woff2"],
@@ -60,10 +60,12 @@ export default defineConfig({
           },
         ],
       },
-      {
-        name: "InterVariable",
-        cssVariable: "--font-inter-variable",
-        provider: "local",
+    },
+    {
+      provider: fontProviders.local(),
+      name: "InterVariable",
+      cssVariable: "--font-inter-variable",
+      options: {
         variants: [
           {
             src: ["./src/assets/fonts/InterVariable.woff2"],
@@ -72,6 +74,6 @@ export default defineConfig({
           },
         ],
       },
-    ],
-  },
+    },
+  ],
 });
