@@ -28,9 +28,9 @@ export const DEFAULT_CONFIGURATION: DefaultConfigurationType = {
   author: {
     avatar,
     name: "Anshu Meena",
-    headline: "Philosophy & Engineering",
+    headline: "Full-Stack Engineer",
     username: "gxanshu",
-    location: "India",
+    location: "Rajasthan, India",
     pronouns: "He/Him",
   },
   seo: {

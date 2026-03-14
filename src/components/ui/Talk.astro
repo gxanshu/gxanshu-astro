@@ -9,19 +9,17 @@ const { entry } = Astro.props;
 const { Content } = await render(entry);
 ---
 
-<li class="py-0.5">
-  <div class="flex gap-5">
-    <div class="relative min-w-28 shrink-0">
-      <span class="text-muted-foreground text-sm">{entry.data.year}</span>
-    </div>
-    <div class="flex flex-col gap-3">
+<li class="group relative pl-6 before:absolute before:left-0 before:top-2.5 before:w-1.5 before:h-1.5 before:rounded-full before:bg-border group-hover:before:bg-accent before:transition-colors before:duration-300">
+  <div class="flex flex-col gap-2">
+    <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
       <div class="flex flex-col">
-        <span class="text-headings font-medium">{entry.data.title}</span>
-        <span class="text-foreground text-sm">{entry.data.event}, {entry.data.location}</span>
+        <a href={entry.data.url} target="_blank" rel="noopener noreferrer" class="text-headings font-medium link-underline">{entry.data.title}</a>
+        <span class="text-foreground">{entry.data.event} <span class="text-muted-foreground">/ {entry.data.location}</span></span>
       </div>
-      <div class="prose dark:prose-invert prose-sm">
-        <Content />
-      </div>
+      <span class="text-muted-foreground text-sm shrink-0 tabular-nums">{entry.data.year}</span>
+    </div>
+    <div class="prose dark:prose-invert max-w-none">
+      <Content />
     </div>
   </div>
 </li>

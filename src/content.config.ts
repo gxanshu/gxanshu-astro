@@ -48,8 +48,8 @@ const jobCollection = defineCollection({
     title: z.string(),
     company: z.string(),
     location: z.string(),
-    from: z.number(),
-    to: z.number().or(z.enum(["Now"])),
+    from: z.string(),
+    to: z.string(),
   }),
 });
 

@@ -1,6 +1,4 @@
 ---
-import Container from '@/components/Container.astro';
-
 const pathname = Astro.url.pathname;
 
 const isHomePage = pathname === '/';
@@ -8,41 +6,28 @@ const isBlogPage = pathname.startsWith('/blog');
 const isNotesPage = pathname.startsWith('/notes');
 const isProjectsPage = pathname.startsWith('/projects');
 
+const links = [
+  { href: '/', label: 'Home', active: isHomePage },
+  { href: '/blog', label: 'Blog', active: isBlogPage },
+  { href: '/notes', label: 'Notes', active: isNotesPage },
+  { href: '/projects', label: 'Projects', active: isProjectsPage },
+];
 ---
 
-<Container as='header' class="w-full max-w-full flex justify-center items-center">
-  <div class="w-max fixed top-0 mt-5 bg-muted-foreground/40 backdrop-blur-md border border-border rounded-full p-1 z-100">
-    <nav class="flex items-center">
-      <ul class="flex items-center gap-1">
-        <li>
-          <a href="/" class:list={[
-            'font-medium transition-colors block px-5 py-2',
-            'hover:text-headings',
-            isHomePage && 'text-headings bg-muted-foreground/40 rounded-full',
-          ]}>Home</a>
-        </li>
-        <li>
-          <a href="/blog" class:list={[
-            'font-medium transition-colors block px-5 py-2',
-            'hover:text-headings',
-            isBlogPage && 'text-headings bg-muted-foreground/40 rounded-full',
-          ]}>Blogs</a>
-        </li>
-        <li>
-          <a href="/notes" class:list={[
-            'font-medium transition-colors block px-5 py-2',
-            'hover:text-headings',
-            isNotesPage && 'text-headings bg-muted-foreground/40 rounded-full',
-          ]}>Notes</a>
-        </li>
-        <li>
-          <a href="/projects" class:list={[
-            'font-medium transition-colors block px-5 py-2',
-            'hover:text-headings',
-            isProjectsPage && 'text-headings bg-muted-foreground/40 rounded-full',
-          ]}>Projects</a>
-        </li>
-      </ul>
-    </nav>
-  </div>
-</Container>
+<header class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+  <nav class="flex items-center gap-1 px-1.5 py-1.5 bg-palette-100/80 dark:bg-palette-200/80 backdrop-blur-xl border border-border/60 rounded-full shadow-lg shadow-black/5 dark:shadow-black/20">
+    {links.map(({ href, label, active }) => (
+      <a
+        href={href}
+        class:list={[
+          'relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-300',
+          active
+            ? 'text-background bg-headings shadow-sm'
+            : 'text-foreground hover:text-headings hover:bg-palette-200/60 dark:hover:bg-palette-300/60',
+        ]}
+      >
+        {label}
+      </a>
+    ))}
+  </nav>
+</header>

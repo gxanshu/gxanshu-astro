@@ -4,39 +4,27 @@ import { getImage } from 'astro:assets';
 import type { AuthorInfo } from '@/lib/constants';
 
 interface Props extends AuthorInfo {}
-const { avatar, name, headline, username, location, pronouns } = Astro.props;
+const { avatar, name, headline, username, location } = Astro.props;
 
 const image = await getImage({ src: avatar, format: 'avif'});
 ---
 
-<div class="flex items-center gap-4">
-  <div class="relative rounded-full shrink-0 overflow-hidden">
-    <Image
-      loading="eager"
-      src={image.src}
-      alt={name}
-      width={92}
-      height={92}
-      class="rounded-full"
-    />
-  </div>
-  <div class="flex flex-col gap-2">
-    <div class="flex flex-col gap-0.5">
-      <h1 class="text-xl font-semibold text-headings leading-tight">{name}</h1>
-      <p class="text-base text-foreground leading-tight">
-        {headline} in {' '}
-        <span>
-          {location}
-        </span>,
-        {pronouns && (
-          <span>
-            {pronouns}
-          </span>
-        )}
-      </p>
+<div class="flex flex-col gap-6">
+  <div class="flex items-center gap-4">
+    <div class="relative shrink-0">
+      <Image
+        loading="eager"
+        src={image.src}
+        alt={name}
+        width={56}
+        height={56}
+        class="rounded-full ring-2 ring-border/60 ring-offset-2 ring-offset-background"
+      />
+      <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-background animate-pulse-dot" title="Available for work"></span>
     </div>
-    <span class="text-foreground text-sm bg-muted-foreground/40 px-2 py-1 rounded-full w-max leading-none">
-      {username}
-    </span>
+    <div class="flex flex-col gap-0.5">
+      <h1 class="text-xl font-semibold text-headings tracking-tight">{name}</h1>
+      <p class="text-base text-foreground">{headline} <span class="text-muted-foreground">/ {location}</span></p>
+    </div>
   </div>
 </div>

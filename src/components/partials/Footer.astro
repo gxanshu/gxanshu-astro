@@ -1,9 +1,13 @@
 ---
-import Container from '@/components/Container.astro';
+const year = new Date().getFullYear();
 ---
 
-<Container as='footer' class='pt-24'>
-  <p class="text-center text-muted-foreground text-sm">
-    &copy; {new Date().getFullYear()}. Powered by <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a> and CVfolio.
-  </p>
-</Container>
+<footer class="max-w-[720px] mx-auto px-6 pb-28 pt-16">
+  <div class="flex items-center justify-between text-sm text-muted-foreground">
+    <span>&copy; {year} Anshu Meena</span>
+    <div class="flex items-center gap-4">
+      <a href="https://github.com/gxanshu" target="_blank" rel="noopener noreferrer" class="hover:text-headings transition-colors">GitHub</a>
+      <a href="https://x.com/gxanshu" target="_blank" rel="noopener noreferrer" class="hover:text-headings transition-colors">X</a>
+    </div>
+  </div>
+</footer>

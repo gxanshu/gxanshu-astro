@@ -6,7 +6,10 @@ import Author from '@/components/ui/Author.astro';
 import { DEFAULT_CONFIGURATION } from '@/lib/constants';
 import WorkExperience from '@/components/ui/WorkExperience.astro';
 import Talk from '@/components/ui/Talk.astro';
+import BlogPreview from '@/components/ui/BlogPreview.astro';
+import ProjectPreview from '@/components/ui/ProjectPreview.astro';
 import { sortJobsByDate } from '@/lib/utils';
+import LinkIcon from '@/components/ui/LinkIcon.astro';
 
 const entry = await getEntry('pages', 'homepage');
 
@@ -20,77 +23,100 @@ const links = await getCollection('links');
 const jobs = await getCollection('jobs');
 const sortedJobs = sortJobsByDate(jobs);
 const talks = await getCollection('talks');
+const blogs = (await getCollection('blogs')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime()).slice(0, 5);
+const projects = (await getCollection('projects')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime()).slice(0, 5);
 ---
 
 <BaseLayout seo={entry.data.seo}>
-  <Container as="section" class="py-6">
+  <!-- Hero -->
+  <Container as="section" class="pt-16 pb-12">
     <Author {...DEFAULT_CONFIGURATION.author} />
   </Container>
 
-  <Container as="section" class="py-6">
-    <div class="flex flex-col gap-6">
-      <div class="flex items-center">
-        <span class="text-headings">About</span>
-      </div>
-      <div class="prose dark:prose-invert">
-        <Content />
-      </div>
+  <!-- About -->
+  <Container as="section" class="pb-12">
+    <div class="prose dark:prose-invert prose-p:leading-relaxed max-w-none">
+      <Content />
     </div>
   </Container>
-  {
-    links.length > 0 && (
-      <Container as="section" class="py-8">
-        <div class="flex flex-col gap-5">
-          <span class="text-headings">Contact</span>
-          <ul class="flex flex-col gap-3">
-            {links.map((link) => (
-              <li class="py-0.5">
-                <div class="flex items-center gap-5">
-                  <span class="min-w-28 text-muted-foreground">
-                    {link.data.label}
-                  </span>
-                  <a
-                    class="text-headings font-medium"
-                    rel="noopener noreferrer"
-                    target="_blank"
-                    href={link.data.url}
-                  >
-                    {link.data.name}
-                  </a>
-                </div>
-              </li>
-            ))}
-          </ul>
+
+  <!-- Contact -->
+  {links.length > 0 && (
+    <Container as="section" class="pb-12">
+      <div class="flex flex-col gap-4">
+        <h2 class="text-sm font-semibold uppercase tracking-widest text-muted-foreground">Connect</h2>
+        <div class="flex flex-wrap gap-3">
+          {links.map((link) => (
+            <a
+              href={link.data.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 px-4 py-2.5 text-base font-medium text-headings bg-surface/80 border border-border/60 rounded-full hover:border-accent/40 hover:text-accent transition-all duration-300"
+            >
+              <LinkIcon label={link.data.label} />
+              {link.data.name}
+            </a>
+          ))}
         </div>
-      </Container>
-    )
-  }
-  {
-    sortedJobs.length > 0 && (
-      <Container as="section" class="py-6">
-        <div class="flex flex-col gap-5">
-          <span class="text-headings">Work Experience</span>
-          <ul class="flex flex-col gap-8">
-            {sortedJobs.map((job) => (
-              <WorkExperience entry={job} />
-            ))}
-          </ul>
+      </div>
+    </Container>
+  )}
+
+  <!-- Recent Writing -->
+  {blogs.length > 0 && (
+    <Container as="section" class="pb-12">
+      <div class="flex flex-col gap-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-sm font-semibold uppercase tracking-widest text-muted-foreground">Recent Writing</h2>
+          <a href="/blog" class="text-base text-muted-foreground hover:text-accent transition-colors duration-300">View all &rarr;</a>
         </div>
-      </Container>
-    )
-  }
-  {
-    talks.length > 0 && (
-      <Container as="section" class="py-6">
-        <div class="flex flex-col gap-5">
-          <span class="text-headings">Speaking</span>
-          <ul class="flex flex-col gap-8">
-            {talks.map((talk) => (
-              <Talk entry={talk} />
-            ))}
-          </ul>
+        <ul class="flex flex-col">
+          {blogs.map((post, i) => <BlogPreview entry={post} index={i} />)}
+        </ul>
+      </div>
+    </Container>
+  )}
+
+  <!-- Featured Projects -->
+  {projects.length > 0 && (
+    <Container as="section" class="pb-12">
+      <div class="flex flex-col gap-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-sm font-semibold uppercase tracking-widest text-muted-foreground">Projects</h2>
+          <a href="/projects" class="text-base text-muted-foreground hover:text-accent transition-colors duration-300">View all &rarr;</a>
         </div>
-      </Container>
-    )
-  }
+        <ul class="flex flex-col">
+          {projects.map((project, i) => <ProjectPreview entry={project} index={i} />)}
+        </ul>
+      </div>
+    </Container>
+  )}
+
+  <!-- Work Experience -->
+  {sortedJobs.length > 0 && (
+    <Container as="section" class="pb-12">
+      <div class="flex flex-col gap-4">
+        <h2 class="text-sm font-semibold uppercase tracking-widest text-muted-foreground">Experience</h2>
+        <ul class="flex flex-col gap-6">
+          {sortedJobs.map((job) => (
+            <WorkExperience entry={job} />
+          ))}
+        </ul>
+      </div>
+    </Container>
+  )}
+
+  <!-- Speaking -->
+  {talks.length > 0 && (
+    <Container as="section" class="pb-12">
+      <div class="flex flex-col gap-4">
+        <h2 class="text-sm font-semibold uppercase tracking-widest text-muted-foreground">Speaking</h2>
+        <ul class="flex flex-col gap-6">
+          {talks.map((talk) => (
+            <Talk entry={talk} />
+          ))}
+        </ul>
+      </div>
+    </Container>
+  )}
 </BaseLayout>

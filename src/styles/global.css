@@ -16,44 +16,53 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --palette-base: #fff;
-  --palette-50: oklch(0.98 0.005 95.9); /* #fafafa */
-  --palette-100: oklch(0.97 0.003 107.8); /* #f5f5f5 */
-  --palette-200: oklch(0.93 0.003 107.8); /* #e5e5e5 */
-  --palette-300: oklch(0.89 0.003 107.8); /* #d4d4d4 */
-  --palette-400: oklch(0.74 0.003 107.8); /* #a3a3a3 */
-  --palette-500: oklch(0.6 0.003 107.8); /* #737373 */
-  --palette-600: oklch(0.5 0.003 107.8); /* #525252 */
-  --palette-700: oklch(0.45 0.003 107.8); /* #404040 */
-  --palette-800: oklch(0.35 0.003 107.8); /* #262626 */
-  --palette-900: oklch(0.3 0.003 107.8); /* #171717 */
-  --palette-950: oklch(0.25 0.003 107.8); /* #0a0a0a */
+  --palette-base: #fafaf9;
+  --palette-50: #fafaf9;
+  --palette-100: #f5f5f4;
+  --palette-200: #e7e5e4;
+  --palette-300: #d6d3d1;
+  --palette-400: #a8a29e;
+  --palette-500: #78716c;
+  --palette-600: #57534e;
+  --palette-700: #44403c;
+  --palette-800: #292524;
+  --palette-900: #1c1917;
+  --palette-950: #0c0a09;
+
+  --accent: #e11d48;
+  --accent-muted: #fb7185;
 }
 
 .dark {
-  --palette-base: #000;
-  --palette-50: oklch(0.25 0.003 107.8); /* #0a0a0a */
-  --palette-100: oklch(0.3 0.003 107.8); /* #171717 */
-  --palette-200: oklch(0.35 0.003 107.8); /* #262626 */
-  --palette-300: oklch(0.4 0.003 107.8); /* #373737 */
-  --palette-400: oklch(0.5 0.003 107.8); /* #525252 */
-  --palette-500: oklch(0.67 0.003 107.8); /* #8a8a8a */
-  --palette-600: oklch(0.74 0.003 107.8); /* #a3a3a3 */
-  --palette-700: oklch(0.89 0.003 107.8); /* #d4d4d4 */
-  --palette-800: oklch(0.93 0.003 107.8); /* #e5e5e5 */
-  --palette-900: oklch(0.97 0.003 107.8); /* #f5f5f5 */
-  --palette-950: oklch(0.98 0.005 95.9); /* #fafafa */
+  --palette-base: #0c0a09;
+  --palette-50: #0c0a09;
+  --palette-100: #1c1917;
+  --palette-200: #292524;
+  --palette-300: #44403c;
+  --palette-400: #57534e;
+  --palette-500: #78716c;
+  --palette-600: #a8a29e;
+  --palette-700: #d6d3d1;
+  --palette-800: #e7e5e4;
+  --palette-900: #f5f5f4;
+  --palette-950: #fafaf9;
+
+  --accent: #fb7185;
+  --accent-muted: #e11d48;
 }
 
 @theme inline {
   --spacing: 4px;
   --color-white: #fff;
   --color-black: #000;
-  --color-background: var(--palette-50);
-  --color-foreground: var(--palette-600);
+  --color-background: var(--palette-base);
+  --color-foreground: var(--palette-700);
   --color-muted-foreground: var(--palette-400);
-  --color-headings: var(--palette-800);
-  --color-border: var(--palette-300);
+  --color-headings: var(--palette-900);
+  --color-border: var(--palette-200);
+  --color-surface: var(--palette-100);
+  --color-accent: var(--accent);
+  --color-accent-muted: var(--accent-muted);
 
   --font-sans: var(--font-inter),
     ui-sans-serif,
@@ -63,4 +72,83 @@
     'Segoe UI Emoji',
     'Segoe UI Symbol',
     'Noto Color Emoji';
+
+  --font-mono: 'JetBrains Mono',
+    ui-monospace,
+    SFMono-Regular,
+    'SF Mono',
+    Menlo,
+    Consolas,
+    'Liberation Mono',
+    monospace;
+}
+
+/* Selection */
+::selection {
+  background-color: var(--accent);
+  color: white;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Animated underline for links */
+.link-underline {
+  position: relative;
+  text-decoration: none;
+}
+.link-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background: var(--accent);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.link-underline:hover::after {
+  width: 100%;
+}
+
+/* Stagger animation for lists */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* Grain texture overlay */
+.grain::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+/* Status dot pulse */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.animate-pulse-dot {
+  animation: pulse-dot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }

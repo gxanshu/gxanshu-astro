@@ -23,14 +23,16 @@ export const includeDraft = (draft: boolean) => {
   return draft !== true;
 };
 
-export const sortJobsByDate = (jobs: CollectionEntry<'jobs'>[]) => {
-  // Convert "Now" to current year, otherwise returns the year as is
-  const getEndYear = (job: CollectionEntry<'jobs'>) =>
-    job.data.to === 'Now' ? new Date().getFullYear() : job.data.to;
+const parseJobDate = (dateStr: string): number => {
+  if (dateStr === 'Present') return Date.now();
+  return new Date(dateStr).getTime();
+};
 
+export const sortJobsByDate = (jobs: CollectionEntry<'jobs'>[]) => {
   return jobs.sort((current, next) => {
-    // Compare end years first, then fall back to start years if end years are equal
-    const [currentEnd, nextEnd] = [getEndYear(current), getEndYear(next)];
-    return nextEnd - currentEnd || next.data.from - current.data.from;
+    const currentEnd = parseJobDate(current.data.to);
+    const nextEnd = parseJobDate(next.data.to);
+    if (nextEnd !== currentEnd) return nextEnd - currentEnd;
+    return parseJobDate(next.data.from) - parseJobDate(current.data.from);
   });
 };
