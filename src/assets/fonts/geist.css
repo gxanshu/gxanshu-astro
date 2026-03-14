@@ -1,0 +1,23 @@
+/* Variable font */
+@font-face {
+  font-family: GeistVariable;
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("./Geist-Variable.woff2") format("woff2");
+}
+
+/* Mono variable font */
+@font-face {
+  font-family: GeistMono;
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("./GeistMono-Variable.woff2") format("woff2");
+}
+
+/* Static fonts */
+@font-face { font-family: "Geist"; font-style: normal; font-weight: 400; font-display: swap; src: url("./Geist-Regular.woff2") format("woff2"); }
+@font-face { font-family: "Geist"; font-style: normal; font-weight: 500; font-display: swap; src: url("./Geist-Medium.woff2") format("woff2"); }
+@font-face { font-family: "Geist"; font-style: normal; font-weight: 600; font-display: swap; src: url("./Geist-SemiBold.woff2") format("woff2"); }
+@font-face { font-family: "Geist"; font-style: normal; font-weight: 700; font-display: swap; src: url("./Geist-Bold.woff2") format("woff2"); }

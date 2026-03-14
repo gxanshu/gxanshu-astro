@@ -5,7 +5,7 @@ module.exports = {
       typography: () => ({
         DEFAULT: {
           css: {
-            fontFamily: `var(--font-inter-variable), var(--font-inter), 'ui-sans-serif', 'system-ui', 'sans-serif'`,
+            fontFamily: `var(--font-geist-variable), var(--font-geist), 'ui-sans-serif', 'system-ui', 'sans-serif'`,
             '--tw-prose-body': 'var(--color-foreground)',
             '--tw-prose-headings': 'var(--color-headings)',
             '--tw-prose-links': 'var(--color-headings)',

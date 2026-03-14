@@ -29,46 +29,55 @@ export default defineConfig({
   fonts: [
     {
       provider: fontProviders.local(),
-      name: "Inter",
-      cssVariable: "--font-inter",
+      name: "Geist",
+      cssVariable: "--font-geist",
       options: {
         variants: [
           {
-            src: ["./src/assets/fonts/Inter-Regular.woff2"],
+            src: ["./src/assets/fonts/Geist-Regular.woff2"],
             style: "normal",
             weight: 400,
           },
           {
-            src: ["./src/assets/fonts/Inter-Medium.woff2"],
+            src: ["./src/assets/fonts/Geist-Medium.woff2"],
             style: "normal",
             weight: 500,
           },
           {
-            src: ["./src/assets/fonts/Inter-SemiBold.woff2"],
+            src: ["./src/assets/fonts/Geist-SemiBold.woff2"],
             style: "normal",
             weight: 600,
           },
           {
-            src: ["./src/assets/fonts/Inter-Bold.woff2"],
+            src: ["./src/assets/fonts/Geist-Bold.woff2"],
             style: "normal",
             weight: 700,
-          },
-          {
-            src: ["./src/assets/fonts/Inter-ExtraBold.woff2"],
-            style: "normal",
-            weight: 800,
           },
         ],
       },
     },
     {
       provider: fontProviders.local(),
-      name: "InterVariable",
-      cssVariable: "--font-inter-variable",
+      name: "GeistVariable",
+      cssVariable: "--font-geist-variable",
       options: {
         variants: [
           {
-            src: ["./src/assets/fonts/InterVariable.woff2"],
+            src: ["./src/assets/fonts/Geist-Variable.woff2"],
+            style: "normal",
+            weight: "variable",
+          },
+        ],
+      },
+    },
+    {
+      provider: fontProviders.local(),
+      name: "GeistMono",
+      cssVariable: "--font-geist-mono",
+      options: {
+        variants: [
+          {
+            src: ["./src/assets/fonts/GeistMono-Variable.woff2"],
             style: "normal",
             weight: "variable",
           },
