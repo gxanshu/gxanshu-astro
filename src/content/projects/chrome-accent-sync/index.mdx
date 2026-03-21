@@ -1,0 +1,22 @@
+---
+title: 'Chrome Accent Sync: Match Your Browser Theme to Your Desktop'
+date: 2026-03-21
+seo:
+  title: 'Chrome Accent Sync: Match Your Browser Theme to Your Desktop'
+  description: A Linux utility that automatically synchronizes your desktop's accent color with Chrome and Chromium browser themes using D-Bus and managed policies.
+  type: article
+---
+
+Tired of your browser looking out of place on your carefully themed desktop? **chrome-accent-sync** bridges the gap between your Linux desktop environment and your web browser by automatically synchronizing accent colors — no extensions required.
+
+The tool monitors D-Bus signals for accent color changes and writes a managed policy JSON file that Chrome reads to apply matching theme colors. Change your system accent color in GNOME, KDE Plasma, or any desktop that supports XDG Desktop Portal — your browser theme updates to match, instantly.
+
+**Key features:**
+
+- **Zero-extension approach:** Works through Chrome's managed policy system, not browser add-ons
+- **Cross-desktop support:** Compatible with GNOME 47+, KDE Plasma 6, and any XDG Desktop Portal implementation
+- **Multi-browser support:** Works with Chromium, Google Chrome, Brave, Edge, and other Chromium-based browsers
+- **Runs as a systemd user service:** Starts automatically at login with no elevated permissions needed after initial setup
+- **Written in Rust:** Lightweight and efficient
+
+Install it with a single command or build from source with Cargo. Check it out on [GitHub](https://github.com/gxanshu/chrome-accent-sync).
