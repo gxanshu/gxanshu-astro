@@ -5,7 +5,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import ProjectPreview from '@/components/ui/ProjectPreview.astro';
 
 const entry = await getEntry('pages', 'projects');
-const projects = (await getCollection('projects')).sort((a, b) => a.data.date.getTime() - b.data.date.getTime());
+const projects = (await getCollection('projects')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 ---
 
 <BaseLayout seo={entry.data.seo}>

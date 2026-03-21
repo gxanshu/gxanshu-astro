@@ -24,7 +24,7 @@ const jobs = await getCollection('jobs');
 const sortedJobs = sortJobsByDate(jobs);
 const talks = await getCollection('talks');
 const blogs = (await getCollection('blogs')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime()).slice(0, 5);
-const projects = (await getCollection('projects')).sort((a, b) => a.data.date.getTime() - b.data.date.getTime()).slice(0, 5);
+const projects = (await getCollection('projects')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime()).slice(0, 5);
 ---
 
 <BaseLayout seo={entry.data.seo}>
