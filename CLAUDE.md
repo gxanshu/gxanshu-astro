@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Personal portfolio website for Anshu Meena (gxanshu) built with Astro 5, based on the CVfolio template. Deployed at https://gxanshu.in. Showcases blog posts, notes, projects, work experience, and talks.
+Personal portfolio website for Anshu Meena (gxanshu) built with Astro 6, based on the CVfolio template. Deployed at https://gxanshu.in. Showcases blog posts, notes, projects, work experience, and talks.
 
 ## Commands
 
@@ -17,7 +17,9 @@ No test framework is configured.
 
 ## Architecture
 
-**Stack:** Astro 5 (static site generation) + React 18 (client islands) + TailwindCSS 4 + MDX
+**Stack:** Astro 6 (static site generation) + React 19 (client islands) + TailwindCSS 4 + MDX
+
+**Import alias:** `@/` maps to `./src/*` (configured in `tsconfig.json`). Used throughout the codebase.
 
 **Content system:** Seven collections defined in `src/content.config.ts` using Astro Content Loader with Zod schema validation:
 - `blogs`, `notes`, `projects` — date-sorted content with SEO metadata and optional images
@@ -29,11 +31,13 @@ Content lives in `src/content/<collection>/` as `.md`, `.mdx`, or `.yml` files. 
 
 **Routing:** File-based routing in `src/pages/`. Dynamic routes use `[...slug].astro` with `getStaticPaths()` for blogs, notes, and projects. OG images are generated dynamically at `/open-graph/[...route].ts` using `astro-og-canvas`.
 
-**Layout:** Single `BaseLayout` wraps all pages, injecting SEO head tags, header, footer, and Astro `ClientRouter` for smooth transitions. The `Container` component is polymorphic (accepts an `as` prop).
+**Layout:** Single `BaseLayout` wraps all pages, injecting SEO head tags, header, footer, and `transition:animate` for smooth page transitions. The `Container` component is polymorphic (accepts an `as` prop).
 
-**Styling:** TailwindCSS 4 with `@tailwindcss/typography`. Custom oklch()-based color palette defined as CSS variables in `src/styles/global.css`. Dark mode uses a CSS class toggle with palette inversion. Theme switching is a React island (`SwitchTheme.tsx`) using `client:only="react"`.
+**Styling:** TailwindCSS 4 with `@tailwindcss/typography`. Custom hex-based color palette defined as CSS variables in `src/styles/global.css`, with semantic tokens (`--color-background`, `--color-foreground`, `--color-headings`, etc.) mapped in a `@theme inline` block. Dark mode uses a `.dark` CSS class toggle that inverts the palette. Theme switching is a React island (`SwitchTheme.tsx`) using `client:only="react"`. Tailwind config in `tailwind.config.mjs` customizes typography prose colors to use the palette variables.
 
-**Fonts:** Inter font family served locally from `src/assets/fonts/` via Astro's experimental fonts feature.
+**Fonts:** Geist font family (Geist, GeistVariable, GeistMono) served locally from `src/assets/fonts/` via Astro's fonts feature. CSS variables: `--font-geist`, `--font-geist-variable`, `--font-geist-mono`.
+
+**Syntax highlighting:** Shiki with `slack-dark` theme, configured in `astro.config.mjs`.
 
 **Reading time:** Custom remark plugin at `src/lib/remark.mjs` injects `minutesRead` into frontmatter during markdown processing.
 
