@@ -50,6 +50,7 @@ const jobCollection = defineCollection({
     location: z.string(),
     from: z.string(),
     to: z.string(),
+    stack: z.array(z.string()).optional(),
   }),
 });
 
@@ -71,6 +72,7 @@ const blogsCollection = defineCollection({
       title: z.string(),
       date: z.date(),
       image: image().optional(),
+      tags: z.array(z.string()).optional(),
       seo: seoSchema(image),
     }),
 });
@@ -95,6 +97,8 @@ const projectsCollection = defineCollection({
       title: z.string(),
       date: z.date(),
       image: image().optional(),
+      language: z.string().optional(),
+      tagline: z.string().optional(),
       seo: seoSchema(image),
     }),
 });

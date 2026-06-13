@@ -1,33 +1,33 @@
 ---
-const pathname = Astro.url.pathname;
+const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
 
-const isHomePage = pathname === '/';
-const isBlogPage = pathname.startsWith('/blog');
-const isNotesPage = pathname.startsWith('/notes');
-const isProjectsPage = pathname.startsWith('/projects');
+const isActive = (href: string) => {
+  if (href === '/') return pathname === '/';
+  return pathname === href || pathname.startsWith(href + '/');
+};
 
 const links = [
-  { href: '/', label: 'Home', active: isHomePage },
-  { href: '/blog', label: 'Blog', active: isBlogPage },
-  { href: '/notes', label: 'Notes', active: isNotesPage },
-  { href: '/projects', label: 'Projects', active: isProjectsPage },
+  { href: '/', label: 'Home' },
+  { href: '/blog', label: 'Blog' },
+  { href: '/projects', label: 'Projects' },
+  { href: '/notes', label: 'Notes' },
 ];
 ---
 
-<header class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
-  <nav class="flex items-center gap-1 px-1.5 py-1.5 bg-palette-100/80 dark:bg-palette-200/80 backdrop-blur-xl border border-border/60 rounded-full shadow-lg shadow-black/5 dark:shadow-black/20">
-    {links.map(({ href, label, active }) => (
-      <a
-        href={href}
-        class:list={[
-          'relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-300',
-          active
-            ? 'text-background bg-headings shadow-sm'
-            : 'text-foreground hover:text-headings hover:bg-palette-200/60 dark:hover:bg-palette-300/60',
-        ]}
-      >
-        {label}
-      </a>
-    ))}
-  </nav>
+<header class="site-header">
+  <div class="site-header-inner">
+    <a class="brand" href="/">
+      <span class="brand-dot"></span>
+      <span>gxanshu<span class="muted">.in</span></span>
+    </a>
+    <nav class="site-nav">
+      {links.map(({ href, label }) => (
+        <a href={href} class:list={[isActive(href) && 'active']}>{label}</a>
+      ))}
+    </nav>
+    <button type="button" class="cmdk-trigger" data-cmdk-trigger>
+      <span>⌕ Search</span>
+      <kbd>⌘K</kbd>
+    </button>
+  </div>
 </header>

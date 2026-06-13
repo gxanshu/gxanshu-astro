@@ -1,23 +1,36 @@
 ---
 import { getCollection, getEntry } from 'astro:content';
-import Container from '@/components/Container.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import NotePreview from '@/components/ui/NotePreview.astro';
+import Breadcrumbs from '@/components/ui/Breadcrumbs.astro';
+import SectionHead from '@/components/ui/SectionHead.astro';
 
-const entry = await getEntry('pages', 'notes');
-const notes = (await getCollection('notes')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const pageEntry = await getEntry('pages', 'notes');
+const notes = (await getCollection('notes')).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+
+const seo = pageEntry?.data.seo ?? {
+  title: 'Notes — Anshu Meena',
+  description: 'Short-form notes and bookmarks.',
+};
 ---
 
-<BaseLayout seo={entry.data.seo}>
-  <Container as='section' class='pt-16 pb-12'>
-    <div class="flex flex-col gap-2">
-      <h1 class="text-xl font-semibold text-headings tracking-tight">Notes</h1>
-      <p class="text-foreground">Quick thoughts and observations.</p>
-    </div>
-  </Container>
-  <Container as='section' class='pb-12'>
-    <ul class="flex flex-col">
-      {notes.map((post, i) => <NotePreview entry={post} index={i} />)}
-    </ul>
-  </Container>
+<BaseLayout seo={seo}>
+  <Breadcrumbs items={[{ label: '~', href: '/' }, { label: 'notes' }]} />
+  <h1 class="page-title">Notes</h1>
+  <p class="page-sub">
+    Short-form writing, bookmarks, and fragments too small to be a full post.
+  </p>
+
+  {notes.length > 0 ? (
+    <section class="section" style="margin-top:32px">
+      <SectionHead title="Archive" aside={`${notes.length} notes`} />
+      <ul class="list">
+        {notes.map((n) => <NotePreview entry={n} />)}
+      </ul>
+    </section>
+  ) : (
+    <p class="muted">No notes yet.</p>
+  )}
 </BaseLayout>

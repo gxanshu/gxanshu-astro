@@ -1,6 +1,6 @@
 ---
-import { getImage, Font } from 'astro:assets';
-import type { Seo } from '@/lib/constants'
+import { getImage } from 'astro:assets';
+import type { Seo } from '@/lib/constants';
 import { DEFAULT_CONFIGURATION } from '@/lib/constants';
 import { generateAbsoluteUrl } from '@/lib/utils';
 import { ClientRouter } from "astro:transitions";
@@ -14,13 +14,11 @@ const { seo } = Astro.props;
 
 let seoImage: string;
 const pathname = Astro.url?.pathname || '/';
-// Remove trailing slash if present
 const cleanPath = pathname.replace(/\/$/, '');
-// Compute og:image dynamically for any content path except root
 if (pathname !== '/' && pathname !== '') {
   seoImage = `https://gxanshu.in/open-graph${cleanPath}.png`;
 } else {
-  const image = await getImage({ src: seo?.image || defaultSeo.image, format: 'jpg'});
+  const image = await getImage({ src: seo?.image || defaultSeo.image, format: 'jpg' });
   seoImage = generateAbsoluteUrl(image.src);
 }
 ---
@@ -28,10 +26,9 @@ if (pathname !== '/' && pathname !== '') {
   <meta charset="utf-8" />
   <link rel="sitemap" href="/sitemap-index.xml" />
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-  <Font cssVariable="--font-geist" preload />
-  <Font cssVariable="--font-geist-variable" preload />
-  <Font cssVariable="--font-geist-mono" preload />
-  { seo?.canonicalUrl && <link rel="canonical" href={seo?.canonicalUrl} />}
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  {seo?.canonicalUrl && <link rel="canonical" href={seo.canonicalUrl} />}
   <title>{seo?.title || defaultSeo.title}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="generator" content={Astro.generator} />
@@ -39,7 +36,6 @@ if (pathname !== '/' && pathname !== '') {
   <slot name="keywords">
     <meta name="keywords" content={seo?.keywords || defaultSeo.keywords} />
   </slot>
-  <meta name="generator" content={Astro.generator} />
   <meta name="robots" content={seo?.robots || defaultSeo.robots} />
   <!-- OpenGraph Meta -->
   <meta property="og:type" content={seo?.type ?? 'website'} />
@@ -56,19 +52,7 @@ if (pathname !== '/' && pathname !== '') {
   <meta property="twitter:title" content={seo?.title || defaultSeo.title} />
   <meta property="twitter:description" content={seo?.description || defaultSeo.description} />
   <meta property="twitter:image" content={seoImage} />
-   <link rel="sitemap" href="/sitemap-index.xml" />
-   <meta name="ocs-site-verification" content="0b6315dcfa4f12114f5f921ba0c72c85" />
-  <script is:inline>
-    // Prevent FOUC by applying theme before page renders
-    (function() {
-      const theme = localStorage.getItem('theme') ||
-        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-      if (theme === 'dark') {
-        document.documentElement.classList.add('dark');
-      }
-    })();
-  </script>
-
+  <meta name="ocs-site-verification" content="0b6315dcfa4f12114f5f921ba0c72c85" />
   <ClientRouter />
   <slot />
 </head>

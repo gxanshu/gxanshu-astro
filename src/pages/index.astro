@@ -1,21 +1,17 @@
 ---
 import { getEntry, getCollection, render } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import Container from '@/components/Container.astro';
 import Author from '@/components/ui/Author.astro';
 import { DEFAULT_CONFIGURATION } from '@/lib/constants';
 import WorkExperience from '@/components/ui/WorkExperience.astro';
 import Talk from '@/components/ui/Talk.astro';
 import BlogPreview from '@/components/ui/BlogPreview.astro';
-import ProjectPreview from '@/components/ui/ProjectPreview.astro';
-import { sortJobsByDate } from '@/lib/utils';
+import SectionHead from '@/components/ui/SectionHead.astro';
 import LinkIcon from '@/components/ui/LinkIcon.astro';
+import { sortJobsByDate, formatDateYearMonth } from '@/lib/utils';
 
 const entry = await getEntry('pages', 'homepage');
-
-if (!entry) {
-  throw new Error('Homepage entry not found');
-}
+if (!entry) throw new Error('Homepage entry not found');
 
 const { Content } = await render(entry);
 
@@ -23,100 +19,206 @@ const links = await getCollection('links');
 const jobs = await getCollection('jobs');
 const sortedJobs = sortJobsByDate(jobs);
 const talks = await getCollection('talks');
-const blogs = (await getCollection('blogs')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime()).slice(0, 5);
-const projects = (await getCollection('projects')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime()).slice(0, 5);
+const blogs = (await getCollection('blogs'))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 5);
+const projects = (await getCollection('projects'))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 4);
+
+const stats = [
+  { k: '06+', v: 'Years shipping' },
+  { k: '30+', v: 'OSS repos' },
+  { k: 'TS · Rust · Zig', v: 'Daily drivers' },
+  { k: 'Linux', v: 'Natural habitat' },
+];
+
+const dither = (i: number) => (i % 2 === 0 ? 'dither' : 'dither-amber');
 ---
 
 <BaseLayout seo={entry.data.seo}>
-  <!-- Hero -->
-  <Container as="section" class="pt-16 pb-12">
-    <Author {...DEFAULT_CONFIGURATION.author} />
-  </Container>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-grid">
+      <Author {...DEFAULT_CONFIGURATION.author} />
+      <aside class="stats box">
+        {stats.map((s) => (
+          <div class="stat">
+            <div class="stat-k">{s.k}</div>
+            <div class="stat-v mono-label">{s.v}</div>
+          </div>
+        ))}
+      </aside>
+    </div>
 
-  <!-- About -->
-  <Container as="section" class="pb-12">
-    <div class="prose dark:prose-invert prose-p:leading-relaxed max-w-none">
+    <div class="bio">
       <Content />
     </div>
-  </Container>
 
-  <!-- Contact -->
-  {links.length > 0 && (
-    <Container as="section" class="pb-12">
-      <div class="flex flex-col gap-4">
-        <h2 class="text-sm font-semibold uppercase tracking-widest text-muted-foreground">Connect</h2>
-        <div class="flex flex-wrap gap-3">
+    {links.length > 0 && (
+      <div class="connect">
+        <div class="mono-label">&gt; connect</div>
+        <div class="connect-grid">
           {links.map((link) => (
             <a
+              class="connect-cell"
               href={link.data.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 px-4 py-2.5 text-base font-medium text-headings bg-surface/80 border border-border/60 rounded-full hover:border-accent/40 hover:text-accent transition-all duration-300"
+              target={link.data.url.startsWith('http') ? '_blank' : undefined}
+              rel={link.data.url.startsWith('http') ? 'noopener noreferrer' : undefined}
             >
               <LinkIcon label={link.data.label} />
-              {link.data.name}
+              <span class="c-k">{link.data.label}</span>
+              <span class="c-v">{link.data.name}</span>
             </a>
           ))}
         </div>
       </div>
-    </Container>
-  )}
+    )}
+  </section>
 
-  <!-- Recent Writing -->
+  <!-- WRITING -->
   {blogs.length > 0 && (
-    <Container as="section" class="pb-12">
-      <div class="flex flex-col gap-4">
-        <div class="flex items-center justify-between">
-          <h2 class="text-sm font-semibold uppercase tracking-widest text-muted-foreground">Recent Writing</h2>
-          <a href="/blog" class="text-base text-muted-foreground hover:text-accent transition-colors duration-300">View all &rarr;</a>
-        </div>
-        <ul class="flex flex-col">
-          {blogs.map((post, i) => <BlogPreview entry={post} index={i} />)}
-        </ul>
-      </div>
-    </Container>
+    <section class="section" id="writing">
+      <SectionHead title="Recent writing" link={{ href: '/blog', label: 'View all →' }} />
+      <ul class="list">
+        {blogs.map((post) => <BlogPreview entry={post} />)}
+      </ul>
+    </section>
   )}
 
-  <!-- Featured Projects -->
+  <!-- PROJECTS -->
   {projects.length > 0 && (
-    <Container as="section" class="pb-12">
-      <div class="flex flex-col gap-4">
-        <div class="flex items-center justify-between">
-          <h2 class="text-sm font-semibold uppercase tracking-widest text-muted-foreground">Projects</h2>
-          <a href="/projects" class="text-base text-muted-foreground hover:text-accent transition-colors duration-300">View all &rarr;</a>
-        </div>
-        <ul class="flex flex-col">
-          {projects.map((project, i) => <ProjectPreview entry={project} index={i} />)}
-        </ul>
+    <section class="section">
+      <SectionHead title="Projects" link={{ href: '/projects', label: 'View all →' }} />
+      <div class="proj-grid">
+        {projects.map((p, i) => (
+          <a class="proj" href={`/projects/${p.id}/`}>
+            <div class:list={['proj-thumb', dither(i)]}></div>
+            <div>
+              <div class="proj-meta mono-label">
+                {p.data.language ?? 'Project'} · {formatDateYearMonth(p.data.date).slice(0, 4)}
+              </div>
+              <div class="proj-title">{p.data.title}</div>
+              <div class="proj-desc">{p.data.tagline ?? p.data.seo.description}</div>
+            </div>
+          </a>
+        ))}
       </div>
-    </Container>
+    </section>
   )}
 
-  <!-- Work Experience -->
+  <!-- EXPERIENCE -->
   {sortedJobs.length > 0 && (
-    <Container as="section" class="pb-12">
-      <div class="flex flex-col gap-4">
-        <h2 class="text-sm font-semibold uppercase tracking-widest text-muted-foreground">Experience</h2>
-        <ul class="flex flex-col gap-6">
-          {sortedJobs.map((job) => (
-            <WorkExperience entry={job} />
-          ))}
-        </ul>
-      </div>
-    </Container>
+    <section class="section">
+      <SectionHead title="Experience" aside="2018 → now" />
+      <ol class="timeline">
+        {sortedJobs.map((job, i) => (
+          <WorkExperience entry={job} isLast={i === sortedJobs.length - 1} />
+        ))}
+      </ol>
+    </section>
   )}
 
-  <!-- Speaking -->
+  <!-- SPEAKING -->
   {talks.length > 0 && (
-    <Container as="section" class="pb-12">
-      <div class="flex flex-col gap-4">
-        <h2 class="text-sm font-semibold uppercase tracking-widest text-muted-foreground">Speaking</h2>
-        <ul class="flex flex-col gap-6">
-          {talks.map((talk) => (
-            <Talk entry={talk} />
-          ))}
-        </ul>
-      </div>
-    </Container>
+    <section class="section">
+      <SectionHead title="Speaking" />
+      {talks.map((t) => <Talk entry={t} />)}
+    </section>
   )}
 </BaseLayout>
+
+<style>
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 240px;
+    gap: 20px;
+    margin-bottom: 28px;
+  }
+  .stats {
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    align-self: stretch;
+  }
+  .stat-k {
+    font-family: var(--font-mono), 'IBM Plex Mono', monospace;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .stat-v { margin-top: 4px; }
+  .bio {
+    max-width: 720px;
+    margin-top: 8px;
+    font-size: 15px;
+    line-height: 1.65;
+  }
+  .bio :global(p) { margin: 0 0 14px; }
+  .bio :global(p:first-child) {
+    font-size: 16px;
+    color: var(--ink);
+  }
+  .bio :global(p:last-child) {
+    color: var(--ink-3);
+  }
+  .bio :global(strong) { color: var(--ink); font-weight: 600; }
+  .bio :global(em) { font-style: italic; }
+  .bio :global(a) { color: var(--ink); text-decoration-color: var(--amber); }
+
+  .connect { margin-top: 28px; }
+  .connect-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--cols, 3), 1fr);
+    border: 1.5px solid var(--ink);
+    box-shadow: 3px 3px 0 var(--ink);
+    margin-top: 8px;
+  }
+  .connect-cell {
+    padding: 14px 16px;
+    text-decoration: none;
+    color: var(--ink);
+    border-right: 1px dashed var(--rule);
+    background: var(--paper);
+    display: block;
+  }
+  .connect-cell:last-child { border-right: 0; }
+  .connect-cell:hover { background: var(--amber-bg); text-decoration: none; color: var(--ink); }
+  .connect-cell :global(.c-ico) { margin-bottom: 8px; }
+  .c-k {
+    display: block;
+    font-family: var(--font-mono), 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .c-v {
+    display: block;
+    font-family: var(--font-mono), 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--ink);
+    margin-top: 2px;
+    word-break: break-all;
+  }
+
+  .proj-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 20px;
+  }
+  .timeline { list-style: none; padding: 0; margin: 20px 0 0; }
+
+  @media (max-width: 720px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .stats { flex-direction: row; flex-wrap: wrap; }
+    .stat { flex: 1 1 44%; }
+    .connect-grid { grid-template-columns: 1fr 1fr; }
+    .connect-cell { border-right: 0; border-bottom: 1px dashed var(--rule); }
+    .connect-cell:nth-last-child(-n+1) { border-bottom: 0; }
+    .proj-grid { grid-template-columns: 1fr; }
+  }
+</style>

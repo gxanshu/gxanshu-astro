@@ -1,0 +1,13 @@
+---
+interface Props {
+  label: string;
+  filter: string;
+  active?: boolean;
+}
+const { label, filter, active = false } = Astro.props;
+---
+<button
+  type="button"
+  class:list={['chip', active && 'active']}
+  data-filter={filter}
+>{label}</button>

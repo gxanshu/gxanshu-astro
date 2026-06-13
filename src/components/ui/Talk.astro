@@ -9,17 +9,33 @@ const { entry } = Astro.props;
 const { Content } = await render(entry);
 ---
 
-<li class="group relative pl-6 before:absolute before:left-0 before:top-2.5 before:w-1.5 before:h-1.5 before:rounded-full before:bg-border group-hover:before:bg-accent before:transition-colors before:duration-300">
-  <div class="flex flex-col gap-2">
-    <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
-      <div class="flex flex-col">
-        <a href={entry.data.url} target="_blank" rel="noopener noreferrer" class="text-headings font-medium link-underline">{entry.data.title}</a>
-        <span class="text-foreground">{entry.data.event} <span class="text-muted-foreground">/ {entry.data.location}</span></span>
-      </div>
-      <span class="text-muted-foreground text-sm shrink-0 tabular-nums">{entry.data.year}</span>
-    </div>
-    <div class="prose dark:prose-invert max-w-none">
-      <Content />
-    </div>
+<div class="box speaking">
+  <div class="speak-meta mono-label">{entry.data.year} · {entry.data.location}</div>
+  <div class="speak-title">
+    {entry.data.url ? (
+      <a href={entry.data.url} target="_blank" rel="noopener noreferrer">{entry.data.title}</a>
+    ) : entry.data.title}
   </div>
-</li>
+  <div class="speak-venue">{entry.data.event}</div>
+  <div class="speak-content small muted">
+    <Content />
+  </div>
+</div>
+
+<style>
+  .speaking { padding: 18px 20px; margin-top: 20px; }
+  .speak-meta { margin-bottom: 6px; }
+  .speak-title {
+    font-family: var(--font-mono), 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    font-size: 17px;
+    margin-bottom: 4px;
+  }
+  .speak-title a { text-decoration: none; }
+  .speak-venue {
+    font-size: 13px;
+    color: var(--ink-2);
+    margin-bottom: 8px;
+  }
+  .speak-content :global(p) { margin: 0; }
+</style>

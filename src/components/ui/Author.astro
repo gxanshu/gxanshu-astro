@@ -1,30 +1,96 @@
 ---
-import { Image } from 'astro:assets';
-import { getImage } from 'astro:assets';
+import Window from '@/components/ui/Window.astro';
 import type { AuthorInfo } from '@/lib/constants';
 
-interface Props extends AuthorInfo {}
-const { avatar, name, headline, username, location } = Astro.props;
+interface Props extends AuthorInfo {
+  experience?: string;
+}
 
-const image = await getImage({ src: avatar, format: 'avif'});
+const { name, headline, location, username, experience = '6y+ shipping' } = Astro.props;
 ---
 
-<div class="flex flex-col gap-6">
-  <div class="flex items-center gap-4">
-    <div class="relative shrink-0">
-      <Image
-        loading="eager"
-        src={image.src}
-        alt={name}
-        width={56}
-        height={56}
-        class="rounded-full ring-2 ring-border/60 ring-offset-2 ring-offset-background"
-      />
-      <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-background animate-pulse-dot" title="Available for work"></span>
+<Window title={`USER :: ${username ?? 'anshu'}@rajasthan`} trailing="◼" noBody class="nameplate">
+  <div class="nameplate-body">
+    <div class="avatar dither">
+      <div class="avatar-inner">
+        <svg viewBox="0 0 64 64" width="100%" height="100%" style="image-rendering:pixelated" aria-hidden="true">
+          <rect width="64" height="64" fill="#F1EADB"></rect>
+          <rect x="20" y="10" width="24" height="22" fill="#1A1510"></rect>
+          <rect x="18" y="14" width="28" height="16" fill="#B4651E"></rect>
+          <rect x="22" y="18" width="4" height="4" fill="#1A1510"></rect>
+          <rect x="38" y="18" width="4" height="4" fill="#1A1510"></rect>
+          <rect x="28" y="26" width="8" height="2" fill="#1A1510"></rect>
+          <rect x="16" y="30" width="32" height="4" fill="#1A1510"></rect>
+          <rect x="12" y="34" width="40" height="24" fill="#3B332A"></rect>
+          <rect x="18" y="40" width="28" height="14" fill="#F1EADB"></rect>
+        </svg>
+      </div>
     </div>
-    <div class="flex flex-col gap-0.5">
-      <h1 class="text-xl font-semibold text-headings tracking-tight">{name}</h1>
-      <p class="text-base text-foreground">{headline} <span class="text-muted-foreground">/ {location}</span></p>
+    <div class="nameplate-meta">
+      <div class="mono-label">ID · 0x01</div>
+      <h1>{name}</h1>
+      <div class="nameplate-role">{headline}</div>
+      <div class="nameplate-loc">
+        {location && <span>▲ {location}</span>}
+        <span>▲ {experience}</span>
+        <span class="status-dot"><i></i> online</span>
+      </div>
     </div>
   </div>
-</div>
+  <div class="nameplate-strip dither-amber"></div>
+</Window>
+
+<style>
+  .nameplate { overflow: hidden; }
+  .nameplate-body {
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    gap: 20px;
+    padding: 18px 20px;
+    align-items: center;
+  }
+  .avatar {
+    width: 96px;
+    height: 96px;
+    border: 1.5px solid var(--ink);
+    box-shadow: 3px 3px 0 var(--ink);
+    position: relative;
+    align-self: start;
+  }
+  .avatar-inner {
+    position: absolute;
+    inset: 0;
+    background: var(--paper);
+  }
+  .nameplate-meta { line-height: 1.35; }
+  .nameplate-meta h1 { margin: 2px 0 4px; font-size: 32px; line-height: 1.1; }
+  .nameplate-role {
+    font-family: var(--font-mono), 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--ink-2);
+    line-height: 1.35;
+  }
+  .nameplate-loc {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 4px;
+    column-gap: 16px;
+    font-size: 11px;
+    color: var(--ink-3);
+    font-family: var(--font-mono), 'IBM Plex Mono', monospace;
+  }
+  .nameplate-strip {
+    height: 8px;
+    border-top: 1.5px solid var(--ink);
+  }
+  @media (max-width: 720px) {
+    .nameplate-body {
+      grid-template-columns: 72px 1fr;
+      gap: 14px;
+      padding: 16px;
+    }
+    .avatar { width: 72px; height: 72px; }
+    .nameplate-meta h1 { font-size: 28px; }
+  }
+</style>

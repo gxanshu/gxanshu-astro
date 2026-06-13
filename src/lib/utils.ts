@@ -6,11 +6,24 @@ export const formatDate = (date: Date) => {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
-    timeZone: 'UTC', // Default to UTC to prevent timezone issues
+    timeZone: 'UTC',
   });
-
-  // Ensure we're parsing the date correctly
   return formatter.format(new Date(date));
+};
+
+export const formatDateDot = (date: Date) => {
+  const d = new Date(date);
+  const y = d.getUTCFullYear();
+  const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(d.getUTCDate()).padStart(2, '0');
+  return `${y}.${m}.${day}`;
+};
+
+export const formatDateYearMonth = (date: Date) => {
+  const d = new Date(date);
+  const y = d.getUTCFullYear();
+  const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+  return `${y}.${m}`;
 };
 
 export const generateAbsoluteUrl = (path: string) =>

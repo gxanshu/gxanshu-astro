@@ -3,23 +3,107 @@ import { render, type CollectionEntry } from 'astro:content';
 
 interface Props {
   entry: CollectionEntry<'jobs'>;
+  isLast?: boolean;
 }
 
-const { entry } = Astro.props;
+const { entry, isLast = false } = Astro.props;
 const { Content } = await render(entry);
 ---
 
-<li class="group relative pl-6 before:absolute before:left-0 before:top-2.5 before:w-1.5 before:h-1.5 before:rounded-full before:bg-border group-hover:before:bg-accent before:transition-colors before:duration-300">
-  <div class="flex flex-col gap-2">
-    <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
-      <div class="flex flex-col">
-        <span class="text-headings font-medium">{entry.data.title}</span>
-        <span class="text-foreground">{entry.data.company} <span class="text-muted-foreground">/ {entry.data.location}</span></span>
-      </div>
-      <span class="text-muted-foreground text-sm shrink-0 tabular-nums">{entry.data.from} — {entry.data.to}</span>
+<li class="tl">
+  <div class="tl-bar">
+    <span class="tl-dot"></span>
+    {!isLast && <span class="tl-line"></span>}
+  </div>
+  <div class="tl-body">
+    <div class="tl-head">
+      <h3>{entry.data.title} <span class="muted">· {entry.data.company}</span></h3>
+      <span class="tl-date mono">{entry.data.from} — {entry.data.to}</span>
     </div>
-    <div class="prose dark:prose-invert max-w-none">
+    <div class="tl-loc mono-label">{entry.data.location}</div>
+    <div class="tl-content">
       <Content />
     </div>
+    {entry.data.stack && entry.data.stack.length > 0 && (
+      <div class="stack">
+        {entry.data.stack.map((s) => <span class="tag">{s}</span>)}
+      </div>
+    )}
   </div>
 </li>
+
+<style>
+  .tl {
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    gap: 16px;
+    padding-bottom: 32px;
+  }
+  .tl:last-child { padding-bottom: 0; }
+  .tl-bar {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .tl-dot {
+    width: 12px;
+    height: 12px;
+    background: var(--amber);
+    border: 1.5px solid var(--ink);
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+  .tl-line {
+    flex: 1;
+    width: 1px;
+    border-left: 1px dashed var(--rule);
+    margin-top: 8px;
+  }
+  .tl-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 20px;
+    margin-bottom: 2px;
+  }
+  .tl-head h3 { font-size: 16px; }
+  .tl-date {
+    font-size: 11px;
+    color: var(--ink-3);
+    white-space: nowrap;
+    font-family: var(--font-mono), 'IBM Plex Mono', monospace;
+  }
+  .tl-loc { margin-bottom: 10px; }
+  .tl-content :global(p) {
+    font-size: 15px;
+    color: var(--ink-2);
+    margin: 0 0 10px;
+  }
+  .tl-content :global(ul) {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 10px;
+  }
+  .tl-content :global(ul li) {
+    position: relative;
+    padding-left: 18px;
+    margin-bottom: 4px;
+    font-size: 14px;
+    color: var(--ink-2);
+  }
+  .tl-content :global(ul li::before) {
+    content: "▸";
+    position: absolute;
+    left: 0;
+    color: var(--amber);
+    font-family: var(--font-mono), monospace;
+  }
+  .tl-content :global(a) {
+    color: var(--ink);
+    text-decoration-color: var(--amber);
+  }
+  @media (max-width: 720px) {
+    .tl-head { flex-direction: column; gap: 2px; }
+  }
+</style>

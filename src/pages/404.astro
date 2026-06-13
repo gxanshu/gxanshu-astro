@@ -1,37 +1,64 @@
 ---
 import { getEntry } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import Container from '@/components/Container.astro';
+import Window from '@/components/ui/Window.astro';
 
 const entry = await getEntry('pages', '404');
 ---
 
 <BaseLayout seo={entry?.data.seo}>
-  <Container
-    as="section"
-    class="min-h-[calc(100vh-12rem)] flex items-center justify-center"
-  >
-    <div class="text-center space-y-6">
-      <div class="text-8xl font-bold text-headings/10 select-none">404</div>
-      <div class="space-y-2">
-        <h1 class="text-2xl font-semibold text-headings">{entry?.data.title}</h1>
-        <p class="text-foreground max-w-sm mx-auto">{entry?.data.description}</p>
+  <div class="err-wrap">
+    <Window title="ERR :: file_not_found.404" trailing="✕">
+      <div class="err-body">
+        <div class="mono-label">&gt; fs.stat</div>
+        <h1>404 · file not found</h1>
+        <p class="err-sub">
+          {entry?.data.description ?? "The page you were looking for doesn't exist — or was moved, or never was."}
+        </p>
+        <pre class="err-trace">$ ls /var/www/gxanshu.in{Astro.url.pathname}
+  ls: cannot access '{Astro.url.pathname}': No such file or directory
+$ exit 1</pre>
+        <div class="err-actions">
+          <a class="btn primary" href="/"><span>←</span> Go home</a>
+          <a class="btn" href="/blog"><span>✎</span> Read blog</a>
+        </div>
       </div>
-      <div class="flex gap-3 justify-center pt-4">
-        <a
-          href="/"
-          class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-background bg-headings rounded-full hover:opacity-90 transition-opacity"
-        >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-          Go Home
-        </a>
-        <a
-          href="/blog"
-          class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-headings border border-border rounded-full hover:border-accent/40 hover:text-accent transition-all duration-300"
-        >
-          Read Blog
-        </a>
-      </div>
-    </div>
-  </Container>
+    </Window>
+  </div>
 </BaseLayout>
+
+<style>
+  .err-wrap {
+    max-width: 620px;
+    margin: 40px auto 0;
+  }
+  .err-body { padding: 0; }
+  .err-body h1 {
+    font-size: 32px;
+    margin: 8px 0 12px;
+    letter-spacing: -0.02em;
+  }
+  .err-sub {
+    color: var(--ink-2);
+    font-size: 15px;
+    margin-bottom: 18px;
+  }
+  .err-trace {
+    background: #1A1510;
+    color: #C9B88F;
+    padding: 14px 18px;
+    font-family: var(--font-mono), 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    margin: 0 0 20px;
+    border: 1.5px solid var(--ink);
+    box-shadow: 3px 3px 0 var(--ink);
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .err-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+</style>

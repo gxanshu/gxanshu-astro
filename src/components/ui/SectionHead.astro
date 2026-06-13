@@ -1,0 +1,19 @@
+---
+interface Props {
+  title: string;
+  link?: { href: string; label: string };
+  aside?: string;
+  id?: string;
+}
+
+const { title, link, aside, id } = Astro.props;
+---
+
+<div class="section-head" id={id}>
+  <h2>{title}</h2>
+  {link ? (
+    <a class="section-link" href={link.href}>{link.label}</a>
+  ) : aside ? (
+    <span class="section-link muted">{aside}</span>
+  ) : null}
+</div>

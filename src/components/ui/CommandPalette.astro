@@ -1,0 +1,171 @@
+---
+import { getCollection } from 'astro:content';
+
+const [blogs, projects, notes, links] = await Promise.all([
+  getCollection('blogs'),
+  getCollection('projects'),
+  getCollection('notes'),
+  getCollection('links'),
+]);
+
+const sortDesc = <T extends { data: { date: Date } }>(arr: T[]) =>
+  arr.slice().sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const items = [
+  { section: 'Navigate', icon: '→', title: 'Home', href: '/', meta: 'g h' },
+  { section: 'Navigate', icon: '→', title: 'Blog', href: '/blog', meta: 'g b' },
+  { section: 'Navigate', icon: '→', title: 'Projects', href: '/projects', meta: 'g p' },
+  { section: 'Navigate', icon: '→', title: 'Notes', href: '/notes', meta: 'g n' },
+  ...sortDesc(blogs).map(b => ({
+    section: 'Writing',
+    icon: '✎',
+    title: b.data.title,
+    href: `/blog/${b.id}/`,
+  })),
+  ...sortDesc(projects).map(p => ({
+    section: 'Projects',
+    icon: '◆',
+    title: p.data.title,
+    href: `/projects/${p.id}/`,
+  })),
+  ...sortDesc(notes).map(n => ({
+    section: 'Notes',
+    icon: '✑',
+    title: n.data.title,
+    href: `/notes/${n.id}/`,
+  })),
+  ...links.map(l => ({
+    section: 'Links',
+    icon: '↗',
+    title: `${l.data.label} — ${l.data.name}`,
+    href: l.data.url,
+    external: true,
+  })),
+];
+---
+
+<div class="cmdk-overlay" id="cmdk-overlay" role="dialog" aria-modal="true">
+  <div class="cmdk">
+    <div class="cmdk-titlebar">
+      <span>▸ COMMAND.EXE</span>
+      <span>v1.0</span>
+    </div>
+    <div class="cmdk-input-row">
+      <span class="prompt">&gt;</span>
+      <input
+        class="cmdk-input"
+        id="cmdk-input"
+        placeholder="Type a command or search…"
+        autocomplete="off"
+        spellcheck="false"
+      />
+    </div>
+    <div class="cmdk-list" id="cmdk-list"></div>
+    <div class="cmdk-footer">
+      <span><kbd>↑</kbd><kbd>↓</kbd> navigate · <kbd>↵</kbd> open · <kbd>esc</kbd> close</span>
+      <span>{items.length} commands</span>
+    </div>
+  </div>
+</div>
+
+<script is:inline define:vars={{ ITEMS: items }}>
+  (function () {
+    let ov, inp, listEl, active = 0, filt = ITEMS;
+
+    function mount() {
+      ov = document.getElementById('cmdk-overlay');
+      inp = document.getElementById('cmdk-input');
+      listEl = document.getElementById('cmdk-list');
+      if (!ov || !inp || !listEl) return;
+
+      ov.addEventListener('click', (e) => { if (e.target === ov) close(); });
+
+      inp.addEventListener('input', () => {
+        const q = inp.value.trim().toLowerCase();
+        filt = !q
+          ? ITEMS
+          : ITEMS.filter(i =>
+              i.title.toLowerCase().includes(q) ||
+              i.section.toLowerCase().includes(q)
+            );
+        active = 0;
+        render();
+      });
+
+      inp.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') close();
+        else if (e.key === 'ArrowDown') { e.preventDefault(); active = Math.min(active + 1, filt.length - 1); render(); }
+        else if (e.key === 'ArrowUp') { e.preventDefault(); active = Math.max(active - 1, 0); render(); }
+        else if (e.key === 'Enter') { e.preventDefault(); go(filt[active]); }
+      });
+
+      document.querySelectorAll('[data-cmdk-trigger]').forEach(el =>
+        el.addEventListener('click', open)
+      );
+
+      window.addEventListener('keydown', (e) => {
+        const m = e.metaKey || e.ctrlKey;
+        if (m && e.key.toLowerCase() === 'k') {
+          e.preventDefault();
+          ov.classList.contains('open') ? close() : open();
+        }
+      });
+    }
+
+    function open() {
+      ov.classList.add('open');
+      inp.value = '';
+      filt = ITEMS;
+      active = 0;
+      render();
+      setTimeout(() => inp.focus(), 20);
+    }
+
+    function close() {
+      ov.classList.remove('open');
+    }
+
+    function go(item) {
+      if (!item) return;
+      if (item.external) window.open(item.href, '_blank', 'noopener');
+      else window.location.href = item.href;
+    }
+
+    function render() {
+      const secs = {};
+      filt.forEach((item, idx) => {
+        (secs[item.section] ||= []).push({ item, idx });
+      });
+      let h = '';
+      if (!filt.length) h = '<div class="cmdk-section">No results</div>';
+      else for (const [n, rows] of Object.entries(secs)) {
+        h += `<div class="cmdk-section">${n}</div>`;
+        for (const { item, idx } of rows) {
+          h += `<a class="cmdk-item${idx === active ? ' active' : ''}" data-idx="${idx}" href="${item.href}"${item.external ? ' target="_blank" rel="noopener"' : ''}><span class="cmd-icon">${item.icon}</span><span>${item.title}</span>${item.meta ? `<span class="cmd-meta">${item.meta}</span>` : ''}</a>`;
+        }
+      }
+      listEl.innerHTML = h;
+      listEl.querySelectorAll('.cmdk-item').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          active = parseInt(el.dataset.idx, 10);
+          render();
+        });
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          go(filt[parseInt(el.dataset.idx, 10)]);
+        });
+      });
+      const a = listEl.querySelector('.cmdk-item.active');
+      if (a) a.scrollIntoView({ block: 'nearest' });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', mount);
+    } else {
+      mount();
+    }
+    // Re-mount on Astro view transitions
+    document.addEventListener('astro:after-swap', mount);
+    document.addEventListener('astro:page-load', mount);
+  })();
+</script>
