@@ -1,14 +1,14 @@
 ---
 import '@/styles/global.css';
+import '@/assets/fonts/geist.css';
 import { type Seo } from '@/lib/constants';
 import Header from '@/components/partials/Header.astro';
 import Footer from '@/components/partials/Footer.astro';
 import Head from '@/components/partials/Head.astro';
-import CommandPalette from '@/components/ui/CommandPalette.astro';
+import SwitchTheme from '@/components/SwitchTheme.tsx';
 
 interface Props {
-  seo?: Seo;
-  showProgress?: boolean;
+  seo?: Seo
 }
 
 const { seo } = Astro.props;
@@ -16,13 +16,12 @@ const { seo } = Astro.props;
 
 <html lang="en">
   <Head seo={seo} />
-  <body>
-    <Header />
-    <slot name="before-main" />
-    <main class="page" transition:animate="initial">
+  <body class="bg-background text-foreground text-base leading-relaxed grain">
+    <main class="min-h-screen pt-8" transition:animate="initial">
       <slot />
     </main>
     <Footer />
-    <CommandPalette />
+    <Header />
+    <SwitchTheme client:only="react" />
   </body>
 </html>

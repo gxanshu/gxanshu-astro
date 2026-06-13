@@ -1,145 +1,23 @@
 ---
 import { getCollection, getEntry } from 'astro:content';
+import Container from '@/components/Container.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import ProjectPreview from '@/components/ui/ProjectPreview.astro';
-import Breadcrumbs from '@/components/ui/Breadcrumbs.astro';
-import SectionHead from '@/components/ui/SectionHead.astro';
 
-const pageEntry = await getEntry('pages', 'projects');
-const projects = (await getCollection('projects')).sort(
-  (a, b) => b.data.date.getTime() - a.data.date.getTime()
-);
-
-const [f1, f2, ...rest] = projects;
-const featured = [f1, f2].filter(Boolean);
-
-const langSet = new Set<string>();
-projects.forEach((p) => { if (p.data.language) langSet.add(p.data.language.toLowerCase()); });
-const langs = Array.from(langSet).sort();
-
-const seo = pageEntry?.data.seo ?? {
-  title: 'Projects — Anshu Meena',
-  description: 'Tools, themes, extensions, experiments — mostly open source.',
-};
+const entry = await getEntry('pages', 'projects');
+const projects = (await getCollection('projects')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 ---
 
-<BaseLayout seo={seo}>
-  <Breadcrumbs items={[{ label: '~', href: '/' }, { label: 'projects' }]} />
-  <h1 class="page-title">Projects</h1>
-  <p class="page-sub">
-    Tools, themes, extensions, experiments — mostly open source. Some solve my own problems, some solve other people's.
-  </p>
-
-  {langs.length > 0 && (
-    <div class="filters box-sunk" id="proj-filters">
-      <span class="mono-label">&gt; lang</span>
-      <button type="button" class="chip active" data-filter="all">All</button>
-      {langs.map((l) => (
-        <button type="button" class="chip" data-filter={l}>{l}</button>
-      ))}
+<BaseLayout seo={entry.data.seo}>
+  <Container as='section' class='pt-16 pb-12'>
+    <div class="flex flex-col gap-2">
+      <h1 class="text-xl font-semibold text-headings tracking-tight">Projects</h1>
+      <p class="text-foreground">Things I've built and contributed to.</p>
     </div>
-  )}
-
-  {featured.length > 0 && (
-    <section class="section" style="margin-top:32px">
-      <SectionHead title="Featured" />
-      <div class="proj-big-grid">
-        {featured.map((p, i) => (
-          <a
-            class="proj-big"
-            href={`/projects/${p.id}/`}
-            data-lang={p.data.language?.toLowerCase() ?? 'other'}
-          >
-            <div class:list={['proj-big-art', i % 2 === 0 ? 'dither' : 'dither-amber']}></div>
-            <div class="proj-big-body">
-              <div class="mono-label">
-                {p.data.language ?? 'Project'} · {new Date(p.data.date).getUTCFullYear()}
-              </div>
-              <h3>{p.data.title}</h3>
-              <p>{p.data.tagline ?? p.data.seo.description}</p>
-              {p.data.language && (
-                <div class="stack">
-                  <span class="tag">{p.data.language}</span>
-                </div>
-              )}
-            </div>
-          </a>
-        ))}
-      </div>
-    </section>
-  )}
-
-  {rest.length > 0 && (
-    <section class="section">
-      <SectionHead title="All projects" aside={`${projects.length} repos`} />
-      <ul class="list" id="proj-list">
-        {rest.map((p) => <ProjectPreview entry={p} showTag />)}
-      </ul>
-    </section>
-  )}
+  </Container>
+  <Container as='section' class='pb-12'>
+    <ul class="flex flex-col">
+      {projects.map((post, i) => <ProjectPreview entry={post} index={i} />)}
+    </ul>
+  </Container>
 </BaseLayout>
-
-<style>
-  .proj-big-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    margin-top: 20px;
-  }
-  .proj-big {
-    text-decoration: none;
-    color: var(--ink);
-    border: 1.5px solid var(--ink);
-    box-shadow: 4px 4px 0 var(--ink);
-    background: var(--paper);
-    display: flex;
-    flex-direction: column;
-    transition: transform 0.1s, box-shadow 0.1s;
-  }
-  .proj-big:hover {
-    transform: translate(-1px, -1px);
-    box-shadow: 5px 5px 0 var(--amber);
-    color: var(--ink);
-    text-decoration: none;
-  }
-  .proj-big-art {
-    height: 160px;
-    border-bottom: 1.5px solid var(--ink);
-  }
-  .proj-big-body { padding: 18px 20px; }
-  .proj-big-body h3 { font-size: 17px; margin: 6px 0 8px; }
-  .proj-big-body p { font-size: 14px; color: var(--ink-2); line-height: 1.55; margin-bottom: 12px; }
-  @media (max-width: 680px) {
-    .proj-big-grid { grid-template-columns: 1fr; }
-  }
-</style>
-
-<script is:inline>
-  (function () {
-    function wire() {
-      const filterEl = document.getElementById('proj-filters');
-      const list = document.getElementById('proj-list');
-      if (!filterEl) return;
-      const chips = filterEl.querySelectorAll('.chip');
-      chips.forEach((b) => {
-        b.addEventListener('click', () => {
-          chips.forEach((c) => c.classList.remove('active'));
-          b.classList.add('active');
-          const t = b.dataset.filter;
-          if (list) {
-            list.querySelectorAll(':scope > li').forEach((li) => {
-              li.style.display = t === 'all' || li.dataset.lang === t ? '' : 'none';
-            });
-          }
-          document.querySelectorAll('.proj-big').forEach((el) => {
-            el.style.display = t === 'all' || el.dataset.lang === t ? '' : 'none';
-          });
-        });
-      });
-    }
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', wire);
-    } else wire();
-    document.addEventListener('astro:page-load', wire);
-  })();
-</script>

@@ -1,33 +1,26 @@
 ---
 import { Image } from 'astro:assets';
 import { getImage } from 'astro:assets';
-import { DEFAULT_CONFIGURATION } from '@/lib/constants';
+import { DEFAULT_CONFIGURATION } from '@/lib/constants'
 
 interface Props {
-  size?: number;
   class?: string;
 }
+const { class: className } = Astro.props;
 
-const { size = 96, class: className } = Astro.props;
-
-const image = await getImage({
-  src: DEFAULT_CONFIGURATION.author.avatar,
-  format: 'avif',
-  width: size * 2,
-  height: size * 2,
-});
+const image = await getImage({ src: DEFAULT_CONFIGURATION.author.avatar, format: 'avif'});
 ---
 
-<div
-  class:list={['relative shrink-0', className]}
-  style={`width:${size}px;height:${size}px;border:1.5px solid var(--ink);box-shadow:3px 3px 0 var(--ink);background:var(--paper);overflow:hidden`}
->
+<div class:list={[
+  'relative rounded-full shrink-0 overflow-hidden w-12 h-12',
+  className,
+]}>
   <Image
     loading="eager"
     src={image.src}
     alt={DEFAULT_CONFIGURATION.author.name}
-    width={size}
-    height={size}
-    class="block object-cover w-full h-full"
+    width={52}
+    height={52}
+    class="object-cover"
   />
 </div>

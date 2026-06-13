@@ -1,128 +1,23 @@
 ---
-import { getCollection, getEntry, render } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
+import Container from '@/components/Container.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import BlogPreview from '@/components/ui/BlogPreview.astro';
-import Breadcrumbs from '@/components/ui/Breadcrumbs.astro';
-import SectionHead from '@/components/ui/SectionHead.astro';
-import { formatDateDot } from '@/lib/utils';
 
 const entry = await getEntry('pages', 'blog');
-const blogs = (await getCollection('blogs')).sort(
-  (a, b) => b.data.date.getTime() - a.data.date.getTime()
-);
-
-const [featured, ...archive] = blogs;
-const { remarkPluginFrontmatter: featuredMeta } = featured ? await render(featured) : { remarkPluginFrontmatter: null };
-
-const tagSet = new Set<string>();
-blogs.forEach((b) => (b.data.tags ?? []).forEach((t) => tagSet.add(t.toLowerCase())));
-const tags = Array.from(tagSet).sort();
-
-const count = blogs.length;
-const lastUpdated = blogs[0] ? formatDateDot(blogs[0].data.date) : '';
+const blogs = (await getCollection('blogs')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 ---
 
-<BaseLayout seo={entry?.data.seo}>
-  <Breadcrumbs items={[{ label: '~', href: '/' }, { label: 'blog' }]} />
-  <h1 class="page-title">Writing</h1>
-  <p class="page-sub">
-    Engineering notes, Linux rabbit-holes, and occasional philosophy.
-    <strong>{count} post{count === 1 ? '' : 's'}</strong>{lastUpdated && ` · updated ${lastUpdated}`}.
-  </p>
-
-  {tags.length > 0 && (
-    <div class="filters box-sunk" id="blog-filters">
-      <span class="mono-label">&gt; filter</span>
-      <button type="button" class="chip active" data-filter="all">All</button>
-      {tags.map((t) => (
-        <button type="button" class="chip" data-filter={t}>{t}</button>
-      ))}
+<BaseLayout seo={entry.data.seo}>
+  <Container as='section' class='pt-16 pb-12'>
+    <div class="flex flex-col gap-2">
+      <h1 class="text-xl font-semibold text-headings tracking-tight">Blog</h1>
+      <p class="text-foreground">Thoughts on engineering, philosophy, and building things.</p>
     </div>
-  )}
-
-  {featured && (
-    <section class="section" style="margin-top:32px">
-      <SectionHead title="Featured" aside={formatDateDot(featured.data.date)} />
-      <a class="featured" href={`/blog/${featured.id}/`}>
-        <div class="featured-art dither-amber"></div>
-        <div class="featured-body">
-          <div class="mono-label">
-            {formatDateDot(featured.data.date)}
-            {featured.data.tags?.[0] && ` · ${featured.data.tags[0]}`}
-            {featuredMeta && ` · ${featuredMeta.minutesRead}`}
-          </div>
-          <h2 class="featured-title">{featured.data.title}</h2>
-          <p class="featured-desc">{featured.data.seo.description}</p>
-          <div class="mono muted small">read →</div>
-        </div>
-      </a>
-    </section>
-  )}
-
-  {archive.length > 0 && (
-    <section class="section">
-      <SectionHead title="Archive" />
-      <ul class="list" id="archive">
-        {archive.map((post) => <BlogPreview entry={post} showTag />)}
-      </ul>
-    </section>
-  )}
+  </Container>
+  <Container as='section' class='pb-12'>
+    <ul class="flex flex-col">
+      {blogs.map((post, i) => <BlogPreview entry={post} index={i} />)}
+    </ul>
+  </Container>
 </BaseLayout>
-
-<style>
-  .featured {
-    display: grid;
-    grid-template-columns: 240px 1fr;
-    gap: 24px;
-    margin-top: 20px;
-    text-decoration: none;
-    color: var(--ink);
-    border: 1.5px solid var(--ink);
-    box-shadow: 4px 4px 0 var(--ink);
-    background: var(--paper);
-    transition: transform 0.1s, box-shadow 0.1s;
-  }
-  .featured:hover {
-    transform: translate(-1px, -1px);
-    box-shadow: 5px 5px 0 var(--amber);
-    text-decoration: none;
-    color: var(--ink);
-  }
-  .featured-art {
-    height: 100%;
-    min-height: 200px;
-    border-right: 1.5px solid var(--ink);
-  }
-  .featured-body { padding: 22px 24px; }
-  .featured-title { font-size: 22px; line-height: 1.18; margin: 10px 0; }
-  .featured-desc { color: var(--ink-2); font-size: 14px; line-height: 1.55; margin-bottom: 12px; }
-  @media (max-width: 680px) {
-    .featured { grid-template-columns: 1fr; }
-    .featured-art { min-height: 120px; border-right: 0; border-bottom: 1.5px solid var(--ink); }
-  }
-</style>
-
-<script is:inline>
-  (function () {
-    function wire() {
-      const filterEl = document.getElementById('blog-filters');
-      const archive = document.getElementById('archive');
-      if (!filterEl || !archive) return;
-      const chips = filterEl.querySelectorAll('.chip');
-      chips.forEach((b) => {
-        b.addEventListener('click', () => {
-          chips.forEach((c) => c.classList.remove('active'));
-          b.classList.add('active');
-          const t = b.dataset.filter;
-          archive.querySelectorAll(':scope > li').forEach((li) => {
-            li.style.display = t === 'all' || li.dataset.tag === t ? '' : 'none';
-          });
-        });
-      });
-    }
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', wire);
-    } else wire();
-    document.addEventListener('astro:page-load', wire);
-  })();
-</script>

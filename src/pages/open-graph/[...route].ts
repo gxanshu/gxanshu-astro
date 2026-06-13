@@ -26,8 +26,8 @@ export const { getStaticPaths, GET } = await OGImageRoute({
         size: [96, 96],
       },
       bgGradient: [
-        [241, 234, 219],
-        [232, 223, 201],
+        [38, 50, 56],
+        [63, 81, 181],
       ],
       bgImage: {
         path: "src/assets/images/og-background.png",
@@ -35,30 +35,30 @@ export const { getStaticPaths, GET } = await OGImageRoute({
         position: "center",
       },
       border: {
-        color: [180, 101, 30],
+        color: [63, 81, 181],
         width: 8,
         side: "block-end",
       },
       padding: 64,
       font: {
         title: {
-          color: [26, 21, 16],
+          color: [237, 237, 240],
           size: 54,
           weight: "Bold",
-          families: ["IBM Plex Mono"],
+          families: ["Geist"],
           lineHeight: 1.2,
         },
         description: {
-          color: [59, 51, 42],
+          color: [200, 212, 226],
           size: 28,
           weight: "normal",
-          families: ["IBM Plex Sans"],
+          families: ["Geist"],
           lineHeight: 1.5,
         },
       },
       fonts: [
-        "https://cdn.jsdelivr.net/fontsource/fonts/ibm-plex-mono@latest/latin-700-normal.ttf",
-        "https://cdn.jsdelivr.net/fontsource/fonts/ibm-plex-sans@latest/latin-400-normal.ttf",
+        "https://cdn.jsdelivr.net/fontsource/fonts/geist-sans@latest/latin-700-normal.ttf",
+        "https://cdn.jsdelivr.net/fontsource/fonts/geist-sans@latest/latin-400-normal.ttf",
       ],
     };
   },
